@@ -1,0 +1,11 @@
+README Structure
+Project Title: Clearly state the project name.
+Description: Explain what the project does and its purpose.
+Features: List the key functionalities of the system.
+Technologies Used: Mention the tech stack (PHP, MySQL, Bootstrap, etc.).
+Installation: Provide step-by-step instructions to set up the project locally.
+Usage: Describe how to use the application (e.g., admin login, adding students, etc.).
+Database Setup: Explain the database schema and how to configure it.
+File Structure: Briefly describe the key files and their purposes.
+Contributing: Guide others on how to contribute to the project.
+License: Specify the license for the project.
