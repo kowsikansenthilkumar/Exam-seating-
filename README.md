@@ -2,6 +2,50 @@
 
 A web-based application for managing exam hall seating arrangements for students and staff in a college/university setting.
 
+![Admin Login](https://github.com/user-attachments/assets/960e808f-e7f6-4f82-a7cb-5cadcf64073a)
+
+## ⚡ Quick Start
+
+> **Requirements:** PHP 7.4+, MySQL 5.7+ (or MariaDB 10.3+)
+
+### Option A — One-command launch (Linux / macOS)
+
+```bash
+# Clone the repo
+git clone https://github.com/kowsikansenthilkumar/Exam-seating-.git
+cd Exam-seating-
+
+# Start the app (sets up DB + launches PHP server + opens browser)
+bash start.sh
+```
+
+The script will:
+1. Create the `exam_hall` MySQL database and import the schema
+2. Start PHP's built-in server on **http://localhost:8080**
+3. Open the app in your default browser automatically
+
+**Custom DB credentials:**
+```bash
+DB_USER=myuser DB_PASS=mypassword PORT=9090 bash start.sh
+```
+
+### Option B — XAMPP / WAMP (Windows)
+
+1. Copy the project folder into `htdocs/` (XAMPP) or `www/` (WAMP)
+2. Import `exam_hall.sql` via phpMyAdmin
+3. Edit `dbconnect.php` and set your MySQL username/password
+4. Open `http://localhost/Exam-seating-/` in your browser
+
+### Default Login Credentials
+
+| Role    | Username / Register No. | Password            |
+|---------|-------------------------|---------------------|
+| Admin   | `admin`                 | `admin`             |
+| Student | Student's Register No.  | Date of Birth       |
+| Staff   | Staff's Register No.    | Set at registration |
+
+---
+
 ## Description
 
 The Exam Seat Management System allows administrators to register students and staff, define subjects, create exam halls, and automatically allot exam seats to students. Students can log in to view their assigned seat, and staff can view their allotted exam room.
