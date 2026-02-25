@@ -1,0 +1,219 @@
+/* ========================================================
+   Exam Seat Management System - Custom Styles
+   ======================================================== */
+
+body {
+    font-family: 'Open Sans', Arial, sans-serif;
+    background-color: #f5f5f5;
+}
+
+/* ---- Navbar ---- */
+#menu {
+    background-color: #1a237e;
+    border: none;
+    border-radius: 0;
+    margin-bottom: 0;
+}
+
+#menu .navbar-brand,
+#menu h2 {
+    color: #fff;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin: 10px 0;
+}
+
+#menu .nav > li > a {
+    color: #cfd8dc;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    padding: 18px 14px;
+    transition: color 0.2s, background 0.2s;
+}
+
+#menu .nav > li > a:hover,
+#menu .nav > li.active > a {
+    color: #fff;
+    background-color: #283593;
+}
+
+/* ---- Page background ---- */
+#back {
+    background: linear-gradient(135deg, #1a237e 0%, #283593 40%, #3949ab 100%);
+    height: 320px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 50px;
+}
+
+#back .hero-text {
+    text-align: center;
+    color: #fff;
+}
+
+#back .hero-text h1 {
+    font-size: 2.4em;
+    font-weight: 700;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    letter-spacing: 2px;
+}
+
+#back .hero-text p {
+    font-size: 1.1em;
+    margin-top: 10px;
+    color: #c5cae9;
+}
+
+/* ---- Forms & Tables ---- */
+form table {
+    margin: 30px auto;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.10);
+    padding: 20px 30px;
+}
+
+form table td {
+    padding: 8px 12px;
+    vertical-align: middle;
+}
+
+form table h2,
+form table h3 {
+    color: #1a237e;
+    text-align: center;
+    margin-bottom: 16px;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="date"],
+input[type="number"],
+select,
+textarea {
+    border: 1px solid #b0bec5;
+    border-radius: 4px;
+    padding: 7px 10px;
+    font-size: 14px;
+    width: 100%;
+    box-sizing: border-box;
+    transition: border-color 0.2s;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="email"]:focus,
+input[type="date"]:focus,
+input[type="number"]:focus,
+select:focus,
+textarea:focus {
+    border-color: #3949ab;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(57,73,171,0.15);
+}
+
+input[type="submit"],
+.button21,
+.button211 {
+    background-color: #1a237e;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 22px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-right: 6px;
+}
+
+input[type="submit"]:hover,
+.button21:hover,
+.button211:hover {
+    background-color: #283593;
+}
+
+input[type="reset"] {
+    background-color: #90a4ae;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 18px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+input[type="reset"]:hover {
+    background-color: #78909c;
+}
+
+/* ---- Results table ---- */
+table[border="1"] {
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+}
+
+table[border="1"] td,
+table[border="1"] th {
+    padding: 10px 16px;
+    border: 1px solid #e0e0e0;
+}
+
+table[border="1"] tr:first-child td {
+    background-color: #1a237e;
+    color: #fff;
+    font-weight: 700;
+}
+
+table[border="1"] tr:nth-child(even) td {
+    background-color: #f8f9fa;
+}
+
+/* ---- Footer ---- */
+#footer,
+body > br ~ * {
+    text-align: center;
+    padding: 14px;
+    background-color: #1a237e;
+    color: #c5cae9;
+    font-size: 13px;
+    margin-top: 30px;
+}
+
+#footer a {
+    color: #90caf9;
+}
+
+/* ---- Utility ---- */
+.style4 { font-weight: bold; }
+.style5 { color: #1a237e; font-weight: 600; }
+
+/* ---- Navbar toggle ---- */
+.navbar-toggle .icon-bar {
+    background-color: #fff;
+}
+
+/* ---- Login page card ---- */
+.login-card {
+    max-width: 420px;
+    margin: 60px auto;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+    padding: 36px 40px;
+}
+
+.login-card h2 {
+    text-align: center;
+    color: #1a237e;
+    margin-bottom: 24px;
+}

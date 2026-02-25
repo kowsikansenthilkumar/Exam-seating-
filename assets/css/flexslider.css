@@ -1,0 +1,16 @@
+/* FlexSlider Necessary Resets */
+.flex-container a:hover,
+.flex-slider a:hover { outline: none; }
+.slides,
+.slides > li,
+.flex-control-nav,
+.flex-direction-nav { margin: 0; padding: 0; list-style: none; }
+/* FlexSlider Default Theme */
+.flexslider { margin: 0; padding: 0; }
+.flexslider .slides > li { display: none; -webkit-backface-visibility: hidden; }
+.flexslider .slides img { width: 100%; display: block; }
+.flex-pauseplay span { text-transform: capitalize; }
+.slides:after { content: "\0020"; display: block; clear: both; visibility: hidden; line-height: 0; height: 0; }
+html[xmlns] .slides { display: block; }
+* html .slides { height: 1%; }
+.no-js .slides > li:first-child { display: block; }

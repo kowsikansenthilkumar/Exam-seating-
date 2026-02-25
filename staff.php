@@ -23,89 +23,80 @@
     }
 ?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-    <meta name="description" content="" />
-    <meta name="author" content="" />
-    <title>Exam Seat Management System</title>
-    <!-- BOOTSTRAP CORE STYLE CSS -->
+    <title>Staff Login &mdash; Exam Seat Management System</title>
     <link href="assets/css/bootstrap.css" rel="stylesheet" />
-    <!-- FONT AWESOME CSS -->
-<link href="assets/css/font-awesome.min.css" rel="stylesheet" />
-     <!-- FLEXSLIDER CSS -->
-<link href="assets/css/flexslider.css" rel="stylesheet" />
-    <!-- CUSTOM STYLE CSS -->
-    <link href="assets/css/style.css" rel="stylesheet" />    
-  <!-- Google	Fonts -->
-	<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700,300' rel='stylesheet' type='text/css' />
-	<style>
-	#back{
-	background-image:url("images/1.jpeg");
-	height:600px;
-	width:100%;
-	background-position:left;
-	}
-	
-	
-	</style>
+    <link href="assets/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="assets/css/style.css" rel="stylesheet" />
+    <style>
+        body { background: linear-gradient(135deg, #1b5e20 0%, #388e3c 100%); min-height: 100vh; display: flex; flex-direction: column; }
+        .page-wrap { flex: 1; display: flex; align-items: center; justify-content: center; padding: 80px 16px 40px; }
+        .login-card { background: #fff; border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.25); padding: 40px 44px; width: 100%; max-width: 420px; }
+        .login-card .login-icon { font-size: 3em; color: #2e7d32; text-align: center; margin-bottom: 10px; }
+        .login-card h2 { text-align: center; color: #2e7d32; font-weight: 700; margin-bottom: 28px; }
+        .form-group label { font-weight: 600; color: #37474f; }
+        .form-control { border-radius: 6px; border: 1px solid #b0bec5; padding: 10px 14px; font-size: 15px; }
+        .form-control:focus { border-color: #388e3c; box-shadow: 0 0 0 2px rgba(56,142,60,0.15); }
+        .btn-login { background: #2e7d32; color: #fff; border: none; border-radius: 6px; padding: 11px; font-size: 15px; font-weight: 700; width: 100%; letter-spacing: 0.5px; margin-top: 6px; }
+        .btn-login:hover { background: #1b5e20; color: #fff; }
+        .back-link { text-align: center; margin-top: 18px; font-size: 13px; }
+        .back-link a { color: #558b2f; }
+        footer { background: rgba(0,0,0,0.2); color: #c8e6c9; text-align: center; padding: 14px; font-size: 13px; }
+    </style>
 </head>
-<body >
-   
- <div class="navbar navbar-inverse navbar-fixed-top " id="menu">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button><h2  style="color:#FFFFFF;">EXAM SEAT MANAGEMENT SYSTEM</h2>
-            </div>
-            <div class="navbar-collapse collapse move-me">
-                <ul class="nav navbar-nav navbar-right">
-                  <li ><a href="index.php">HOME</a></li>
-					<li><a href="adminlog.php">ADMIN LOGIN</a></li>
-                     
-                    <li><a href="student.php">STUDENT LOGIN</a></li>  
-                </ul>
-            </div>
-           
-        </div>
+<body>
+  <nav class="navbar navbar-inverse navbar-fixed-top" id="menu">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#main-nav">
+          <span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.php" style="font-weight:700;">
+          <i class="fa fa-graduation-cap"></i> EXAM SEAT MANAGEMENT
+        </a>
+      </div>
+      <div class="collapse navbar-collapse" id="main-nav">
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="index.php"><i class="fa fa-home"></i> HOME</a></li>
+          <li><a href="adminlog.php"><i class="fa fa-user-secret"></i> ADMIN LOGIN</a></li>
+          <li class="active"><a href="staff.php"><i class="fa fa-users"></i> STAFF LOGIN</a></li>
+          <li><a href="student.php"><i class="fa fa-user"></i> STUDENT LOGIN</a></li>
+        </ul>
+      </div>
     </div>
-	<img id="back"/>
-	</div>
-	<br /><br /><br />
-  <?php if (!empty($loginError)): ?>
-    <div style="color:red; text-align:center; margin-bottom:10px;"><?php echo htmlspecialchars($loginError); ?></div>
-  <?php endif; ?>
-  <form id="form1" name="form1" method="post" action="">
-	   <table width="46%" border="0" align="center">
-         <tr>
-           <td colspan="2"><div align="center"><strong>Staff Login</strong></div></td>
-		 </tr>
-         <tr>
-           <td width="48%" height="31" align="center"><strong>Register Number</strong></td>
-           <td><input name="regno" type="text" id="regno" required /></td>
-         </tr>
-         <tr>
-           <td height="44" align="center"><strong>Password</strong></td>
-           <td><input name="password" type="password" id="password" required /></td>
-         </tr>
-         <tr>
-           <td>&nbsp;</td>
-           <td>
-             <input name="btn" type="submit" id="btn" value="Login" />
-             <input type="reset" name="Submit2" value="Cancel" />
-           </td>
-         </tr>
-  </table>
-</form>
-<br />
-     <div id="footer">
-          &copy; 2024 examseat | All Rights Reserved
-     </div>
-     <!-- FOOTER SECTION END-->
-     
+  </nav>
+
+  <div class="page-wrap">
+    <div class="login-card">
+      <div class="login-icon"><i class="fa fa-users"></i></div>
+      <h2>Staff Login</h2>
+      <?php if (!empty($loginError)): ?>
+        <div class="alert alert-danger"><?php echo htmlspecialchars($loginError); ?></div>
+      <?php endif; ?>
+      <form id="form1" method="post" action="">
+        <div class="form-group">
+          <label for="regno">Register Number</label>
+          <input name="regno" type="text" id="regno" class="form-control" placeholder="Enter staff register number" required autofocus />
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input name="password" type="password" id="password" class="form-control" placeholder="Enter password" required autocomplete="current-password" />
+        </div>
+        <button name="btn" type="submit" class="btn btn-login">
+          <i class="fa fa-sign-in"></i> Login
+        </button>
+      </form>
+      <div class="back-link"><a href="index.php"><i class="fa fa-arrow-left"></i> Back to Home</a></div>
+    </div>
+  </div>
+
+  <footer>&copy; 2024 Exam Seat Management System &mdash; All Rights Reserved</footer>
+
+  <script src="assets/js/jquery-1.10.2.js"></script>
+  <script src="assets/js/bootstrap.js"></script>
+  <script src="assets/js/custom.js"></script>
 </body>
 </html>

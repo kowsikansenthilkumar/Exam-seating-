@@ -1,0 +1,17 @@
+# Dependencies
+node_modules/
+vendor/
+
+# PHP/server logs
+*.log
+/tmp/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
