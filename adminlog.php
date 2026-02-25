@@ -1,27 +1,25 @@
 <?php
- 	include("dbconnect.php");
-	extract($_POST);
-	session_start();
+    session_start();
+    include("dbconnect.php");
 
-if(isset($_POST['btn']))
-{
-$qry=mysqli_query($conn,"select * from admin where uname='$uname' && password='$password'");
-$num=mysqli_num_rows($qry);
-if($num==1)
-{
-?>
-<script>alert('welcome to admin home page');
-</script>
-<?php
+    if (isset($_POST['btn'])) {
+        $uname    = $_POST['uname'] ?? '';
+        $password = $_POST['password'] ?? '';
 
-header("location:stureg.php");
-}
-else
-{
-echo "<script>alert('User Name Password Wrong.....')</script>";
+        $stmt = $conn->prepare("SELECT * FROM admin WHERE uname = ? AND password = ?");
+        $stmt->bind_param("ss", $uname, $password);
+        $stmt->execute();
+        $result = $stmt->get_result();
 
-}
-}
+        if ($result->num_rows === 1) {
+            $_SESSION['admin'] = $uname;
+            header("Location: stureg.php");
+            exit;
+        } else {
+            $loginError = "Invalid username or password.";
+        }
+        $stmt->close();
+    }
 ?>
 
 <!DOCTYPE html>
@@ -31,7 +29,7 @@ echo "<script>alert('User Name Password Wrong.....')</script>";
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
     <meta name="description" content="" />
     <meta name="author" content="" />
-    <title>Free Education Template</title>
+    <title>Exam Seat Management System</title>
     <!-- BOOTSTRAP CORE STYLE CSS -->
     <link href="assets/css/bootstrap.css" rel="stylesheet" />
     <!-- FONT AWESOME CSS -->
@@ -77,41 +75,34 @@ echo "<script>alert('User Name Password Wrong.....')</script>";
     </div>
 	<img id="back"/>
 	</div>
-	 </br>        
-           </br>  </br>          
+	<br /><br /><br />
+  <?php if (!empty($loginError)): ?>
+    <div style="color:red; text-align:center; margin-bottom:10px;"><?php echo htmlspecialchars($loginError); ?></div>
+  <?php endif; ?>
   <form id="form1" name="form1" method="post" action="">
 	   <table width="46%" border="0" align="center">
          <tr>
-           <td colspan="2" rowspan="1"><div align="center" class="style1"><strong><font size="+1">Admin Login</font> </div></td>
+           <td colspan="2"><div align="center"><strong>Admin Login</strong></div></td>
 		 </tr>
-			<tr>
-		<td width="48%">&nbsp;</td>
-		    <td width="52%">&nbsp;</td>
-	  		</tr>
+         <tr>
+           <td width="48%" height="31" align="center"><strong>User Name</strong></td>
+           <td><input name="uname" type="text" id="uname" required /></td>
          </tr>
          <tr>
-           <td height="31"align="center"><span class="style2"><strong>User Name </strong></span></td>
-           <td><label>
-             <input name="uname" type="text" id="uname" />
-           </label></td>
-         </tr>
-         <tr>
-           <td height="44" align="center"><span class="style2"><strong>Password</strong></span></td>
-           <td><label>
-             <input name="password" type="password" id="password" />
-           </label></td>
+           <td height="44" align="center"><strong>Password</strong></td>
+           <td><input name="password" type="password" id="password" required /></td>
          </tr>
          <tr>
            <td>&nbsp;</td>
-           <td rowspan="2"><label>
+           <td>
              <input name="btn" type="submit" id="btn" value="Login" />
              <input type="reset" name="Submit2" value="Cancel" />
-           </label></td>
+           </td>
          </tr>
   </table>
 </form>
 <br />
-          &copy 2014 yourdomain.com | All Rights Reserved |  <a href="http://binarytheme.com" style="color: #fff" target="_blank">Design by : binarytheme.com</a>
+          &copy; 2024 examseat | All Rights Reserved
     </div>
      <!-- FOOTER SECTION END-->
    

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
     <meta name="description" content="" />
     <meta name="author" content="" />
-    <title>Free Education Template</title>
+    <title>Exam Seat Management System</title>
     <!-- BOOTSTRAP CORE STYLE CSS -->
     <link href="assets/css/bootstrap.css" rel="stylesheet" />
     <!-- FONT AWESOME CSS -->
@@ -32,6 +32,7 @@
                 <ul class="nav navbar-nav navbar-right">
                    <li ><a href="index.php">HOME</a></li>
 					<li><a href="adminlog.php">ADMIN LOGIN</a></li>
+                    <li><a href="staff.php">STAFF LOGIN</a></li>
                      
                     <li><a href="student.php">STUDENT LOGIN</a></li>  
                 </ul>
@@ -58,7 +59,7 @@
                 </div>
           </div> 
        </div>
-          &copy 2024examseat| All Rights Reserved |  <a href="http://binarytheme.com" style="color: #fff" target="_blank">Design by : binarytheme.com</a>
+          &copy; 2024 examseat| All Rights Reserved |  <a href="http://binarytheme.com" style="color: #fff" target="_blank">Design by : binarytheme.com</a>
     </div>
      <!-- FOOTER SECTION END-->
    

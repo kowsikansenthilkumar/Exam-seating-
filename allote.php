@@ -1,7 +1,13 @@
 <?php
-session_start();
-include("dbconnect.php");
-extract($_POST);
+    session_start();
+    include("dbconnect.php");
+
+    if (!isset($_SESSION['admin'])) {
+        header("Location: adminlog.php");
+        exit;
+    }
+
+    $message = '';
 ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -10,7 +16,7 @@ extract($_POST);
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
     <meta name="description" content="" />
     <meta name="author" content="" />
-    <title>Free Education Template</title>
+    <title>Exam Seat Management System</title>
     <!-- BOOTSTRAP CORE STYLE CSS -->
     <link href="assets/css/bootstrap.css" rel="stylesheet" />
     <!-- FONT AWESOME CSS -->
@@ -47,9 +53,11 @@ extract($_POST);
                 <ul class="nav navbar-nav navbar-right">
                    
 					<li><a href="stureg.php">ADD STUDENT</a></li>
+					<li><a href="adminhome.php">ADD STAFF</a></li>
 					<li><a href="addsub.php">ADD SUBJECT</a></li>
                   <li><a href="addhall.php">ADD HALL</a></li>
 				   <li><a href="allote.php">ALLOTE HALL</a></li>
+				   <li><a href="allotestaff.php">ALLOTE STAFF</a></li>
 				      
 				    <li><a href="view.php">VIEW</a></li>
 								
@@ -99,7 +107,7 @@ extract($_POST);
                   <option value="1 Year">1 Year</option>
                   <option value="2 Year">2 year</option>
                   <option value="3 Year">3 year</option>
-                
+                </select>
               </label></td>
               <td>&nbsp;</td>
               <td>&nbsp;</td>
@@ -137,12 +145,12 @@ extract($_POST);
 				  
 				  
 				   ?>
-                  <option value="<?php echo $row['s1']; ?>"><?php echo $row['s1']; ?></option>
-				   <option value="<?php echo $row['s2']; ?>"><?php echo $row['s2']; ?></option>
-				    <option value="<?php echo $row['s3']; ?>"><?php echo $row['s3']; ?></option>
-					 <option value="<?php echo $row['s4']; ?>"><?php echo $row['s4']; ?></option>
-					  <option value="<?php echo $row['s5']; ?>"><?php echo $row['s5']; ?></option>
-					   <option value="<?php echo $row['s6']; ?>"><?php echo $row['s6']; ?></option>
+                  <option value="<?php echo htmlspecialchars($row['s1']); ?>"><?php echo htmlspecialchars($row['s1']); ?></option>
+				   <option value="<?php echo htmlspecialchars($row['s2']); ?>"><?php echo htmlspecialchars($row['s2']); ?></option>
+				    <option value="<?php echo htmlspecialchars($row['s3']); ?>"><?php echo htmlspecialchars($row['s3']); ?></option>
+					 <option value="<?php echo htmlspecialchars($row['s4']); ?>"><?php echo htmlspecialchars($row['s4']); ?></option>
+					  <option value="<?php echo htmlspecialchars($row['s5']); ?>"><?php echo htmlspecialchars($row['s5']); ?></option>
+					   <option value="<?php echo htmlspecialchars($row['s6']); ?>"><?php echo htmlspecialchars($row['s6']); ?></option>
                  <?php } ?>
                 </select>
               </label></td>
@@ -238,86 +246,86 @@ extract($_POST);
            </br></br>
 		   
 		   
-		<?php  
-if(isset($_POST['btn'])) {
-    $check = mysqli_query($conn, "SELECT * FROM rooms WHERE ename='$ename' AND date='$date' AND ses='$ses'");
-    $count = mysqli_num_rows($check);
-	
-	
-	$check1 = mysqli_query($conn, "SELECT * FROM rooms WHERE ename='$ename' AND date='$date' AND ses='$ses' AND sect='$sec' AND dep='$dept' AND sub='$sub'");
-    $count1 = mysqli_num_rows($check1);
-	
-	
+		<?php
+if (isset($_POST['btn'])) {
+    $dept  = $_POST['dept']  ?? '';
+    $year  = $_POST['year']  ?? '';
+    $sec   = $_POST['sec']   ?? '';
+    $sub   = $_POST['sub']   ?? '';
+    $ename = $_POST['ename'] ?? '';
+    $ses   = $_POST['ses']   ?? '';
+    $roww  = $_POST['roww']  ?? '';
+    $date  = $_POST['date']  ?? '';
+
+    $chk = $conn->prepare("SELECT id FROM rooms WHERE ename = ? AND date = ? AND ses = ?");
+    $chk->bind_param("sss", $ename, $date, $ses);
+    $chk->execute();
+    $chk->store_result();
+    $count = $chk->num_rows;
+    $chk->close();
+
+    $chk1 = $conn->prepare("SELECT id FROM rooms WHERE ename = ? AND date = ? AND ses = ? AND sect = ? AND dep = ? AND sub = ?");
+    $chk1->bind_param("ssssss", $ename, $date, $ses, $sec, $dept, $sub);
+    $chk1->execute();
+    $chk1->store_result();
+    $count1 = $chk1->num_rows;
+    $chk1->close();
 
     if ($count == 0) {
-        echo "<script>alert('No hall created for this exam')</script>";
-    }elseif ($count1 > 0) {
-        echo "<script>alert('already this sec added for this exam')</script>";
-    }else {
-        $sql = "SELECT MAX(id) AS max_id FROM rooms WHERE ename='$ename' AND date='$date' AND ses='$ses' AND regno!='' AND roww='$roww'";
-        $result = mysqli_query($conn, $sql);
+        echo '<div style="color:red;">No hall created for this exam.</div>';
+    } elseif ($count1 > 0) {
+        echo '<div style="color:orange;">This section is already added for this exam.</div>';
+    } else {
+        $maxStmt = $conn->prepare("SELECT MAX(id) AS max_id FROM rooms WHERE ename = ? AND date = ? AND ses = ? AND regno != '' AND roww = ?");
+        $maxStmt->bind_param("ssss", $ename, $date, $ses, $roww);
+        $maxStmt->execute();
+        $maxResult = $maxStmt->get_result();
+        $maxRow = $maxResult->fetch_assoc();
+        $maxID = $maxRow['max_id'];
+        $maxStmt->close();
 
-        if ($result) {
-            $row = mysqli_fetch_array($result);
-			
-			
-			
-			
-			
-            $maxID = $row['max_id'] ;
+        if (empty($maxID)) {
+            $firstStmt = $conn->prepare("SELECT id FROM rooms WHERE roww = ? ORDER BY id ASC LIMIT 1");
+            $firstStmt->bind_param("s", $roww);
+            $firstStmt->execute();
+            $firstResult = $firstStmt->get_result();
+            $firstRow = $firstResult->fetch_assoc();
+            $maxID = $firstRow['id'];
+            $firstStmt->close();
+        } else {
+            $maxID = $maxID + 1;
+        }
 
-           
+        $stuStmt = $conn->prepare("SELECT regno FROM student WHERE dept = ? AND year = ? AND class = ?");
+        $stuStmt->bind_param("sss", $dept, $year, $sec);
+        $stuStmt->execute();
+        $stuResult = $stuStmt->get_result();
 
+        $updateStmt = $conn->prepare("UPDATE rooms SET regno = ?, sect = ?, dep = ?, sub = ? WHERE id = ? AND roww = ?");
+        $updateOk = false;
+        while ($row3 = $stuResult->fetch_assoc()) {
+            $regno = $row3['regno'];
+            $updateStmt->bind_param("ssssss", $regno, $sec, $dept, $sub, $maxID, $roww);
+            $updateStmt->execute();
+            $updateOk = true;
+            $maxID++;
+        }
+        $updateStmt->close();
+        $stuStmt->close();
 
-
-            
-			
-			
-			if($maxID==0){
-			
-			$qt=mysqli_query($conn,"SELECT id FROM rooms  where roww='$roww' ORDER BY id ASC LIMIT 1");
-			
-			$rw=mysqli_fetch_array($qt);
-			
-			
-			 $maxID = $rw[0];
-			
-			
-			}else{
-			
-			            $maxID = $row['max_id']+1;
-			}
-			
-			
-           // Displaying the value of $maxID
-
-            $qry3 = mysqli_query($conn, "SELECT * FROM student WHERE dept='$dept' AND year='$year' AND class='$sec'");
-            $num = mysqli_num_rows($qry3);
-            $num;  // Displaying the value of $num
-
-            while ($row3 = mysqli_fetch_array($qry3)) {
-                $regno = $row3['regno'];
-
-                // Assuming you want to update the row with the specific $maxID
-                $qry4 = mysqli_query($conn,"UPDATE rooms SET regno='$regno',sect='$sec',dep='$dept',sub='$sub' WHERE id='$maxID' AND roww='$roww' ");
-                $maxID++;
-            }
-
-           if ($qry4) {
-    echo "Update successful";
-} else {
-    echo "Update failed: " . mysqli_error($conn);
-}
-        } 
+        if ($updateOk) {
+            echo '<div style="color:green;">Hall allotment updated successfully.</div>';
+        } else {
+            echo '<div style="color:orange;">No students found for the selected criteria.</div>';
+        }
     }
 }
-
 ?>
 
  </br>          
  
 <br />
-          &copy 2024examseat| All Rights Reserved |  <a href="http://binarytheme.com" style="color: #fff" target="_blank">Design by : binarytheme.com</a>
+          &copy; 2024 examseat| All Rights Reserved |  <a href="http://binarytheme.com" style="color: #fff" target="_blank">Design by : binarytheme.com</a>
     </div>
      <!-- FOOTER SECTION END-->
    

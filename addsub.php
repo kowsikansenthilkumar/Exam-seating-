@@ -1,30 +1,32 @@
 <?php
-session_start();
-include("dbconnect.php");
-extract($_POST);
-if(isset($_POST['btn']))
-{
+    session_start();
+    include("dbconnect.php");
 
-	$qry=mysqli_query($conn,"insert into subject values('','$dept','$sem','$s1','$s2','$s3','$s4','$s5','$s6')");
-if($qry)
-{
-?>
-<script language="javascript">
-	alert("Subject Add Successfully..");
-	window.location.href="addsub.php";
-	</script>
-	<?php
-}
-else
-{
-?>
-<script language="javascript">
-	alert("Subject  Add Unsuccessfully..");
-	window.location.href="addsub.php";
-	</script>
-	<?php
-}
-}
+    if (!isset($_SESSION['admin'])) {
+        header("Location: adminlog.php");
+        exit;
+    }
+
+    $message = '';
+    if (isset($_POST['btn'])) {
+        $dept = $_POST['dept'] ?? '';
+        $sem  = $_POST['sem']  ?? '';
+        $s1   = $_POST['s1']   ?? '';
+        $s2   = $_POST['s2']   ?? '';
+        $s3   = $_POST['s3']   ?? '';
+        $s4   = $_POST['s4']   ?? '';
+        $s5   = $_POST['s5']   ?? '';
+        $s6   = $_POST['s6']   ?? '';
+
+        $stmt = $conn->prepare("INSERT INTO subject VALUES ('', ?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("ssssssss", $dept, $sem, $s1, $s2, $s3, $s4, $s5, $s6);
+        if ($stmt->execute()) {
+            $message = '<div style="color:green;">Subject added successfully.</div>';
+        } else {
+            $message = '<div style="color:red;">Error: Could not add subject.</div>';
+        }
+        $stmt->close();
+    }
 ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -33,7 +35,7 @@ else
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
     <meta name="description" content="" />
     <meta name="author" content="" />
-    <title>Free Education Template</title>
+    <title>Exam Seat Management System</title>
     <!-- BOOTSTRAP CORE STYLE CSS -->
     <link href="assets/css/bootstrap.css" rel="stylesheet" />
     <!-- FONT AWESOME CSS -->
@@ -70,9 +72,11 @@ else
                 <ul class="nav navbar-nav navbar-right">
                    
 					<li><a href="stureg.php">ADD STUDENT</a></li>
+					<li><a href="adminhome.php">ADD STAFF</a></li>
 					<li><a href="addsub.php">ADD SUBJECT</a></li>
                   <li><a href="addhall.php">ADD HALL</a></li>
 				   <li><a href="allote.php">ALLOTE HALL</a></li>
+				   <li><a href="allotestaff.php">ALLOTE STAFF</a></li>
 				      
 				    <li><a href="view.php">VIEW</a></li>	
 					<li><a href="index.php">LOGOUT</a></li>  
@@ -83,12 +87,12 @@ else
     </div>
 	<img id="back"/>
 	</div>
-	 </br>        
-           </br>   <form id="form1" name="form1" method="post" action="">
+	<br /><br />
+    <?php if (!empty($message)) echo $message; ?>
+    <form id="form1" name="form1" method="post" action="">
             <div align="center">
-              <p class="style5">
-              <h2>Subject  Details </h2>
-            �</div>
+              <h2>Subject Details</h2>
+            </div>
           
           <table width="95%" border="0">
             <tr>
@@ -191,7 +195,7 @@ else
            </br></br> </br>          
  
 <br />
-          &copy 2024examseat| All Rights Reserved |  <a href="http://binarytheme.com" style="color: #fff" target="_blank">Design by : binarytheme.com</a>
+          &copy; 2024 examseat| All Rights Reserved |  <a href="http://binarytheme.com" style="color: #fff" target="_blank">Design by : binarytheme.com</a>
     </div>
      <!-- FOOTER SECTION END-->
    

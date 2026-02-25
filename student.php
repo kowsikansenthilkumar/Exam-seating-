@@ -1,31 +1,27 @@
 <?php
- 	include("dbconnect.php");
-	extract($_POST);
-	session_start();
+    session_start();
+    include("dbconnect.php");
 
-if(isset($_POST['btn']))
-{
-$qry=mysqli_query($conn,"select * from  student where regno='$regno' && dob='$password'");
-$num=mysqli_num_rows($qry);
-if($num==1)
-{
-$qry1=mysqli_query($conn,"select * from student where regno='$regno'");
-$row=mysqli_fetch_array($qry1);
-$_SESSION['regno']=$row['regno'];
+    if (isset($_POST['btn'])) {
+        $regno    = $_POST['regno'] ?? '';
+        $password = $_POST['password'] ?? '';
+
+        $stmt = $conn->prepare("SELECT * FROM student WHERE regno = ? AND dob = ?");
+        $stmt->bind_param("ss", $regno, $password);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows === 1) {
+            $row = $result->fetch_assoc();
+            $_SESSION['regno'] = $row['regno'];
+            header("Location: stuhome.php");
+            exit;
+        } else {
+            $loginError = "Invalid Register Number or Date of Birth.";
+        }
+        $stmt->close();
+    }
 ?>
-<script>alert('welcome to student home page');
-</script>
-<?php
-
-header("location:stuhome.php");
-}
-else
-{
-echo "<script>alert('User Name Password Wrong.....')</script>";
-
-}
-}
-?> 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -33,7 +29,7 @@ echo "<script>alert('User Name Password Wrong.....')</script>";
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
     <meta name="description" content="" />
     <meta name="author" content="" />
-    <title>Free Education Template</title>
+    <title>Exam Seat Management System</title>
     <!-- BOOTSTRAP CORE STYLE CSS -->
     <link href="assets/css/bootstrap.css" rel="stylesheet" />
     <!-- FONT AWESOME CSS -->
@@ -79,52 +75,37 @@ echo "<script>alert('User Name Password Wrong.....')</script>";
     </div>
 	<img id="back"/>
 	</div>
-	 </br>        
-           </br>  </br>        
-                   
+	<br /><br /><br />
+  <?php if (!empty($loginError)): ?>
+    <div style="color:red; text-align:center; margin-bottom:10px;"><?php echo htmlspecialchars($loginError); ?></div>
+  <?php endif; ?>
   <form id="form1" name="form1" method="post" action="">
 	   <table width="46%" border="0" align="center">
          <tr>
-           <td colspan="2" rowspan="1"><div align="center" class="style1"><strong><font size="+1">Student Login</font> </div></td>
+           <td colspan="2"><div align="center"><strong>Student Login</strong></div></td>
 		 </tr>
-			<tr>
-		<td width="48%">&nbsp;</td>
-		    <td width="52%">&nbsp;</td>
-	  		</tr>
+         <tr>
+           <td width="48%" height="31" align="center"><strong>Register Number</strong></td>
+           <td><input name="regno" type="text" id="regno" required /></td>
          </tr>
          <tr>
-           <td height="31"align="center"><span class="style2"><strong>Register Number</strong></span></td>
-           <td><label>
-             <input name="regno" type="text" id="uname" />
-           </label></td>
-         </tr>
-         <tr>
-           <td height="44" align="center"><span class="style2"><strong>DOB</strong></span></td>
-           <td><label>
-             <input name="password" type="date" id="password" />
-           </label></td>
+           <td height="44" align="center"><strong>Date of Birth</strong></td>
+           <td><input name="password" type="date" id="password" required /></td>
          </tr>
          <tr>
            <td>&nbsp;</td>
-           <td rowspan="2"><label>
+           <td>
              <input name="btn" type="submit" id="btn" value="Login" />
              <input type="reset" name="Submit2" value="Cancel" />
-           </label></td>
+           </td>
          </tr>
   </table>
 </form>
-<br />   
-              
-       </br></br>  
-              
-            
-				   <!-- CONTACT SECTION END-->
-    <div id="footer">
-          &copy 2014 yourdomain.com | All Rights Reserved |  <a href="http://binarytheme.com" style="color: #fff" target="_blank">Design by : binarytheme.com</a>
-    </div>
+<br />
+     <div id="footer">
+          &copy; 2024 examseat | All Rights Reserved
+     </div>
      <!-- FOOTER SECTION END-->
-              
-        
-    
+     
 </body>
 </html>
