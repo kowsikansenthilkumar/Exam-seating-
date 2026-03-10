@@ -1,26 +1,45 @@
 <?php
- 	include("dbconnect.php");
-	extract($_POST);
-	session_start();
-if(isset($_POST['btn']))
-{
+    session_start();
+    include("dbconnect.php");
 
-  
-$qry1=mysqli_query($conn,"select * from student where regno='$regno' ");
-$num=mysqli_num_rows($qry1);
-if($num==1)
-{
-	echo "<script>alert('register number already taken')</script>";
-}else{
+    if (!isset($_SESSION['admin'])) {
+        header("Location: adminlog.php");
+        exit;
+    }
 
-$qry=mysqli_query($conn,"insert into student values('','$regno','$name','$gender','$dob','$depart','$year','$sem','$class','$address','$pnumber','$email')");
-	if($qry){
-	echo "<script>alert('inserted sucessfully')</script>";
-	}
-	
-}
-}
+    $message = '';
+    if (isset($_POST['btn'])) {
+        $regno   = $_POST['regno']   ?? '';
+        $name    = $_POST['name']    ?? '';
+        $gender  = $_POST['gender']  ?? '';
+        $dob     = $_POST['dob']     ?? '';
+        $depart  = $_POST['depart']  ?? '';
+        $year    = $_POST['year']    ?? '';
+        $sem     = $_POST['sem']     ?? '';
+        $class   = $_POST['class']   ?? '';
+        $address = $_POST['address'] ?? '';
+        $pnumber = $_POST['pnumber'] ?? '';
+        $email   = $_POST['email']   ?? '';
 
+        $check = $conn->prepare("SELECT id FROM student WHERE regno = ?");
+        $check->bind_param("s", $regno);
+        $check->execute();
+        $check->store_result();
+
+        if ($check->num_rows === 1) {
+            $message = '<div style="color:red;">Register number already taken.</div>';
+        } else {
+            $stmt = $conn->prepare("INSERT INTO student VALUES ('', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt->bind_param("sssssssssss", $regno, $name, $gender, $dob, $depart, $year, $sem, $class, $address, $pnumber, $email);
+            if ($stmt->execute()) {
+                $message = '<div style="color:green;">Student registered successfully.</div>';
+            } else {
+                $message = '<div style="color:red;">Error: Could not register student.</div>';
+            }
+            $stmt->close();
+        }
+        $check->close();
+    }
 ?>
 
 
@@ -31,7 +50,7 @@ $qry=mysqli_query($conn,"insert into student values('','$regno','$name','$gender
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
     <meta name="description" content="" />
     <meta name="author" content="" />
-    <title>Free Education Template</title>
+    <title>Exam Seat Management System</title>
     <!-- BOOTSTRAP CORE STYLE CSS -->
     <link href="assets/css/bootstrap.css" rel="stylesheet" />
     <!-- FONT AWESOME CSS -->
@@ -68,9 +87,11 @@ $qry=mysqli_query($conn,"insert into student values('','$regno','$name','$gender
                 <ul class="nav navbar-nav navbar-right">
                     
 					<li><a href="stureg.php">ADD STUDENT</a></li>
+					<li><a href="adminhome.php">ADD STAFF</a></li>
 					<li><a href="addsub.php">ADD SUBJECT</a></li>
                   <li><a href="addhall.php">ADD HALL</a></li>
 				   <li><a href="allote.php">ALLOTE HALL</a></li>
+				   <li><a href="allotestaff.php">ALLOTE STAFF</a></li>
 				      
 				    <li><a href="view.php">VIEW</a></li>	
 					<li><a href="index.php">LOGOUT</a></li>  
@@ -81,8 +102,9 @@ $qry=mysqli_query($conn,"insert into student values('','$regno','$name','$gender
     </div>
 	<img id="back"/>
 	</div>
-	 </br>        
-           </br><form id="form1" name="form1" method="post" action="">
+	<br /><br />
+    <?php if (!empty($message)) echo $message; ?>
+    <form id="form1" name="form1" method="post" action="">
             <div align="center">
               <p class="style5">
               <h2>Student Details </h2>
@@ -242,7 +264,7 @@ $qry=mysqli_query($conn,"insert into student values('','$regno','$name','$gender
       </br></br> </br>          
  
 <br />
-          &copy 2024examseat| All Rights Reserved |  <a href="http://binarytheme.com" style="color: #fff" target="_blank">Design by : binarytheme.com</a>
+          &copy; 2024 examseat| All Rights Reserved |  <a href="http://binarytheme.com" style="color: #fff" target="_blank">Design by : binarytheme.com</a>
     </div>
      <!-- FOOTER SECTION END-->
    

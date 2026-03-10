@@ -1,29 +1,39 @@
 <?php
- 	include("dbconnect.php");
-	extract($_POST);
-	session_start();
-if(isset($_POST['btn']))
-{
+    session_start();
+    include("dbconnect.php");
 
-  
-$qry1=mysqli_query($conn,"select * from stalt where regno='$uname' && date='$date' && ses='$ses' ");
-$num=mysqli_num_rows($qry1);
-if($num==1)
-{
-	echo "<script>alert('This staff already alloted on this date& session for another room')</script>";
-}else{
+    if (!isset($_SESSION['admin'])) {
+        header("Location: adminlog.php");
+        exit;
+    }
 
- 
+    $message = '';
+    if (isset($_POST['btn'])) {
+        $uname = $_POST['uname'] ?? '';
+        $date  = $_POST['date']  ?? '';
+        $ses   = $_POST['ses']   ?? '';
+        $ename = $_POST['ename'] ?? '';
+        $room  = $_POST['room']  ?? '';
 
+        $check = $conn->prepare("SELECT id FROM stalt WHERE regno = ? AND date = ? AND ses = ?");
+        $check->bind_param("sss", $uname, $date, $ses);
+        $check->execute();
+        $check->store_result();
 
-$qry=mysqli_query($conn,"insert into stalt values('','$uname','$date','$ename','$room','$ses')");
-	if($qry){
-	echo "<script>alert('inserted sucessfully')</script>";
-	
-	}
-}
-}
-
+        if ($check->num_rows === 1) {
+            $message = '<div style="color:orange;">This staff is already allotted on this date and session for another room.</div>';
+        } else {
+            $stmt = $conn->prepare("INSERT INTO stalt VALUES ('', ?, ?, ?, ?, ?)");
+            $stmt->bind_param("sssss", $uname, $date, $ename, $room, $ses);
+            if ($stmt->execute()) {
+                $message = '<div style="color:green;">Staff allotted successfully.</div>';
+            } else {
+                $message = '<div style="color:red;">Error: Could not allot staff.</div>';
+            }
+            $stmt->close();
+        }
+        $check->close();
+    }
 ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -32,7 +42,7 @@ $qry=mysqli_query($conn,"insert into stalt values('','$uname','$date','$ename','
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
     <meta name="description" content="" />
     <meta name="author" content="" />
-    <title>Free Education Template</title>
+    <title>Exam Seat Management System</title>
     <!-- BOOTSTRAP CORE STYLE CSS -->
     <link href="assets/css/bootstrap.css" rel="stylesheet" />
     <!-- FONT AWESOME CSS -->
@@ -69,9 +79,11 @@ $qry=mysqli_query($conn,"insert into stalt values('','$uname','$date','$ename','
                 <ul class="nav navbar-nav navbar-right">
                    
 					<li><a href="stureg.php">ADD STUDENT</a></li>
+					<li><a href="adminhome.php">ADD STAFF</a></li>
 					<li><a href="addsub.php">ADD SUBJECT</a></li>
                   <li><a href="addhall.php">ADD HALL</a></li>
 				   <li><a href="allote.php">ALLOTE HALL</a></li>
+				   <li><a href="allotestaff.php">ALLOTE STAFF</a></li>
 				      
 				    <li><a href="view.php">VIEW</a></li>
 								
@@ -83,8 +95,9 @@ $qry=mysqli_query($conn,"insert into stalt values('','$uname','$date','$ename','
     </div>
 	<img id="back"/>
 	</div>
-	 </br>        
-           </br>  <form id="f1" name="f1" method="post" action="#" enctype="multipart/form-data">
+	<br /><br />
+    <?php if (!empty($message)) echo $message; ?>
+    <form id="f1" name="f1" method="post" action="" enctype="multipart/form-data">
   <table width="35%" border="0" align="center">
 	
     <tr>
@@ -134,7 +147,7 @@ $qry=mysqli_query($conn,"insert into stalt values('','$uname','$date','$ename','
 				  
 				  
 				   ?>
-                  <option value="<?php echo $row['roomnum']; ?>"><?php echo $row['roomnum']; ?></option>
+                  <option value="<?php echo htmlspecialchars($row['roomnum']); ?>"><?php echo htmlspecialchars($row['roomnum']); ?></option>
                  <?php } ?>
                 </select>
       </td>
@@ -166,7 +179,7 @@ $qry=mysqli_query($conn,"insert into stalt values('','$uname','$date','$ename','
 				  
 				  
 				   ?>
-                  <option value="<?php echo $row['regno']; ?>"><?php echo $row['regno']; ?></option>
+                  <option value="<?php echo htmlspecialchars($row['regno']); ?>"><?php echo htmlspecialchars($row['regno']); ?></option>
                  <?php } ?>
                 </select></td>
     </tr>
@@ -184,7 +197,7 @@ $qry=mysqli_query($conn,"insert into stalt values('','$uname','$date','$ename','
            </br></br> </br>          
  
 <br />
-          &copy 2024examseat| All Rights Reserved |  <a href="http://binarytheme.com" style="color: #fff" target="_blank">Design by : binarytheme.com</a>
+          &copy; 2024 examseat| All Rights Reserved |  <a href="http://binarytheme.com" style="color: #fff" target="_blank">Design by : binarytheme.com</a>
     </div>
      <!-- FOOTER SECTION END-->
    

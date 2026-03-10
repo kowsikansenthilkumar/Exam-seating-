@@ -1,12 +1,13 @@
 <?php
- 	include("dbconnect.php");
-	extract($_POST);
-	session_start();
-error_reporting(0);
-	  echo $stregno=$_SESSION['stregno'];
-	
-	
-	
+    session_start();
+    include("dbconnect.php");
+    error_reporting(0);
+
+    if (!isset($_SESSION['stregno'])) {
+        header("Location: staff.php");
+        exit;
+    }
+    $stregno = $_SESSION['stregno'];
 ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -15,7 +16,7 @@ error_reporting(0);
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
     <meta name="description" content="" />
     <meta name="author" content="" />
-    <title>Free Education Template</title>
+    <title>Exam Seat Management System</title>
     <!-- BOOTSTRAP CORE STYLE CSS -->
     <link href="assets/css/bootstrap.css" rel="stylesheet" />
     <!-- FONT AWESOME CSS -->
@@ -60,16 +61,14 @@ error_reporting(0);
     </div>
 	<img id="back"/>
 	</div>
-	 </br>        
-           </br>       <form id="form1" name="form1" method="post" action="">
+	<br /><br />
+    <form id="form1" name="form1" method="post" action="">
             <div align="center">
-            <p class="style5"></div>
+            </div>
           
           <table width="95%" border="0">
             <tr>
               <td width="8%" height="36">&nbsp;</td>
-             
-              </select></td>
               <td width="8%">Select Exam </td>
               <td width="12%"><label>
                 <select name="sem" id="sem">
@@ -104,35 +103,34 @@ error_reporting(0);
              
               <td width="51%"><input name="btn" type="submit" class="button211" id="btn" value="Search" /></td>
             </tr>
-		<?php 	if(isset($_POST['btn']))
-			{
+		<?php if (isset($_POST['btn'])) {
+            $sem  = $_POST['sem']  ?? '';
+            $ses  = $_POST['ses']  ?? '';
+            $date = $_POST['date'] ?? '';
           ?>
           </table>
 		  </form>
 		  <table width="80%" border="1" align="center">
           
 			<?php
-			
-			
-			$qrt1=mysqli_query($conn,"select * from stalt where date='$date' && ses='$ses'  && ename='$sem' && regno='$stregno'");
-			$rb1=mysqli_fetch_array($qrt1);
+            $stmt = $conn->prepare("SELECT room FROM stalt WHERE date = ? AND ses = ? AND ename = ? AND regno = ?");
+            $stmt->bind_param("ssss", $date, $ses, $sem, $stregno);
+            $stmt->execute();
+            $qrt1 = $stmt->get_result();
+			$rb1 = $qrt1->fetch_assoc();
+            $stmt->close();
 			?>
 			 <tr>
-			
-             
-              <td ><div align="center" class="style4">ALLOTED</div></td>
-			  
-			   <td ><div align="center" class="style4">ROOM NUMBER:</div></td>
-			     <td ><div align="center" class="style4"><?php echo $rb1['room'];?></div></td>
-           
+              <td><div align="center"><strong>ALLOTED ROOM NUMBER</strong></div></td>
+			  <td><div align="center"><?php echo htmlspecialchars($rb1['room'] ?? 'Not allotted'); ?></div></td>
               </tr>
 			<?php } ?>
           </table>
                
-           </br></br> </br>          
+           <br /><br /><br />
  
 <br />
-          &copy 2024examseat| All Rights Reserved |  <a href="http://binarytheme.com" style="color: #fff" target="_blank">Design by : binarytheme.com</a>
+          &copy; 2024 examseat | All Rights Reserved
     </div>
      <!-- FOOTER SECTION END-->
    

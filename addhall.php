@@ -1,36 +1,42 @@
 <?php
-include("dbconnect.php");
-session_start();
-extract($_POST);
+    session_start();
+    include("dbconnect.php");
 
-if(isset($_POST['btn'])){
-    $sel = mysqli_query($conn, "select * from rooms where ename='$ename' && year='$year' && date='$date' && ses='$ses'");
-    $row = mysqli_fetch_assoc($sel); // Fetching the row as an associative array
-
-  if ($row === null) { // Checking if no rows are returned
-    for ($i = 1; $i <= 80; $i++) {
-        for ($j = 1; $j <= 20; $j++) {
-            $a = 'R1';
-            $b = 'R2';
-            
-            if ($i <= 40) {
-                $room_number = $i;
-                $room_identifier = $a;
-            } else {
-                // Reset room number to start from 1 after the first 40 rooms
-                $room_number = $i - 40;
-                $room_identifier = $b;
-            }
-
-            $qry = mysqli_query($conn, "INSERT INTO rooms VALUES ('', '$year', '$room_number', 'seat$j', '$ename', '$room_identifier', '', '', '', '', '$date', '$ses')");
-        }
+    if (!isset($_SESSION['admin'])) {
+        header("Location: adminlog.php");
+        exit;
     }
-    echo "<script>alert('Rooms Added Successfully')</script>";
-} else {
-    echo "<script>alert('Rooms Already Added For This Exam')</script>";
-}
-      
-}
+
+    $message = '';
+    if (isset($_POST['btn'])) {
+        $ename = $_POST['ename'] ?? '';
+        $date  = $_POST['date']  ?? '';
+        $ses   = $_POST['ses']   ?? '';
+        $year  = $_POST['year']  ?? '';
+
+        $check = $conn->prepare("SELECT id FROM rooms WHERE ename = ? AND year = ? AND date = ? AND ses = ?");
+        $check->bind_param("ssss", $ename, $year, $date, $ses);
+        $check->execute();
+        $check->store_result();
+
+        if ($check->num_rows > 0) {
+            $message = '<div style="color:red;">Rooms already added for this exam.</div>';
+        } else {
+            for ($i = 1; $i <= 80; $i++) {
+                for ($j = 1; $j <= 20; $j++) {
+                    $room_identifier = ($i <= 40) ? 'R1' : 'R2';
+                    $room_number     = ($i <= 40) ? $i   : $i - 40;
+                    $seat = 'seat' . $j;
+                    $stmt = $conn->prepare("INSERT INTO rooms VALUES ('', ?, ?, ?, ?, ?, '', '', '', '', ?, ?)");
+                    $stmt->bind_param("sssssss", $year, $room_number, $seat, $ename, $room_identifier, $date, $ses);
+                    $stmt->execute();
+                    $stmt->close();
+                }
+            }
+            $message = '<div style="color:green;">Rooms added successfully.</div>';
+        }
+        $check->close();
+    }
 ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -39,7 +45,7 @@ if(isset($_POST['btn'])){
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
     <meta name="description" content="" />
     <meta name="author" content="" />
-    <title>Free Education Template</title>
+    <title>Exam Seat Management System</title>
     <!-- BOOTSTRAP CORE STYLE CSS -->
     <link href="assets/css/bootstrap.css" rel="stylesheet" />
     <!-- FONT AWESOME CSS -->
@@ -76,9 +82,11 @@ if(isset($_POST['btn'])){
                 <ul class="nav navbar-nav navbar-right">
                    
 					<li><a href="stureg.php">ADD STUDENT</a></li>
+					<li><a href="adminhome.php">ADD STAFF</a></li>
 					<li><a href="addsub.php">ADD SUBJECT</a></li>
                   <li><a href="addhall.php">ADD HALL</a></li>
 				   <li><a href="allote.php">ALLOTE HALL</a></li>
+				   <li><a href="allotestaff.php">ALLOTE STAFF</a></li>
 				      
 				    <li><a href="view.php">VIEW</a></li>	
 					<li><a href="index.php">LOGOUT</a></li>  
@@ -89,12 +97,12 @@ if(isset($_POST['btn'])){
     </div>
 	<img id="back"/>
 	</div>
-	 </br>        
-           </br>   <form id="form1" name="form1" method="post" action="">
+	<br /><br />
+    <?php if (!empty($message)) echo $message; ?>
+    <form id="form1" name="form1" method="post" action="">
             <div align="center">
-              <p class="style5">
               <h2>Add Exams</h2>
-            �</div>
+            </div>
           
           <table width="95%" border="0">
             <tr>
@@ -175,7 +183,7 @@ if(isset($_POST['btn'])){
            </br></br> </br>          
  
 <br />
-          &copy 2024examseat| All Rights Reserved |  <a href="http://binarytheme.com" style="color: #fff" target="_blank">Design by : binarytheme.com</a>
+          &copy; 2024 examseat| All Rights Reserved |  <a href="http://binarytheme.com" style="color: #fff" target="_blank">Design by : binarytheme.com</a>
     </div>
      <!-- FOOTER SECTION END-->
    

@@ -1,8 +1,12 @@
 <?php
- 	include("dbconnect.php");
-	extract($_POST);
-	session_start();
-	error_reporting(0);
+    session_start();
+    include("dbconnect.php");
+    error_reporting(0);
+
+    if (!isset($_SESSION['admin'])) {
+        header("Location: adminlog.php");
+        exit;
+    }
 ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -11,7 +15,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
     <meta name="description" content="" />
     <meta name="author" content="" />
-    <title>Free Education Template</title>
+    <title>Exam Seat Management System</title>
     <!-- BOOTSTRAP CORE STYLE CSS -->
     <link href="assets/css/bootstrap.css" rel="stylesheet" />
     <!-- FONT AWESOME CSS -->
@@ -48,9 +52,11 @@
                 <ul class="nav navbar-nav navbar-right">
                    
 					<li><a href="stureg.php">ADD STUDENT</a></li>
+					<li><a href="adminhome.php">ADD STAFF</a></li>
 					<li><a href="addsub.php">ADD SUBJECT</a></li>
                   <li><a href="addhall.php">ADD HALL</a></li>
 				   <li><a href="allote.php">ALLOTE HALL</a></li>
+				   <li><a href="allotestaff.php">ALLOTE STAFF</a></li>
 				      
 				    <li><a href="view.php">VIEW</a></li>
 								
@@ -62,16 +68,14 @@
     </div>
 	<img id="back"/>
 	</div>
-	 </br>        
-           </br>       <form id="form1" name="form1" method="post" action="">
+	<br /><br />
+    <form id="form1" name="form1" method="post" action="">
             <div align="center">
-            <p class="style5"></div>
+            </div>
           
           <table width="95%" border="0">
             <tr>
               <td width="8%" height="36">&nbsp;</td>
-             
-              </select></td>
               <td width="8%">Select Exam </td>
               <td width="12%"><label>
                 <select name="sem" id="sem">
@@ -100,7 +104,7 @@
 				  
 				  
 				   ?>
-                  <option value="<?php echo $row['roomnum']; ?>"><?php echo $row['roomnum']; ?></option>
+                  <option value="<?php echo htmlspecialchars($row['roomnum']); ?>"><?php echo htmlspecialchars($row['roomnum']); ?></option>
                  <?php } ?>
                 </select>
               </label></td>
@@ -119,51 +123,43 @@
              
               <td width="51%"><input name="btn" type="submit" class="button211" id="btn" value="Search" /></td>
             </tr>
-		<?php 	if(isset($_POST['btn']))
-			{
+		<?php if (isset($_POST['btn'])) {
+            $sem  = $_POST['sem']  ?? '';
+            $room = $_POST['room'] ?? '';
+            $ses  = $_POST['ses']  ?? '';
+            $date = $_POST['date'] ?? '';
           ?>
           </table>
 		  </form>
 		  <table width="80%" border="1" align="center">
             <tr>
-			
-             
-              <td ><div align="center" class="style4">Seat</div></td>
-			  
-			   <td ><div align="center" class="style4">Register Number</div></td>
-			     <td ><div align="center" class="style4">Exam</div></td>
-           
+              <td><div align="center"><strong>Seat</strong></div></td>
+			  <td><div align="center"><strong>Register Number</strong></div></td>
+			  <td><div align="center"><strong>Exam</strong></div></td>
               </tr>
 			<?php
-			
-			$i1=1;
-			$i=1;
-			$qrt=mysqli_query($conn,"select * from rooms where date='$date' && ses='$ses' && roomnum='$room' && ename='$sem'");
-			while($rb=mysqli_fetch_array($qrt)){
-			
-			
-			
+            $stmt = $conn->prepare("SELECT seat, regno, sub FROM rooms WHERE date = ? AND ses = ? AND roomnum = ? AND ename = ?");
+            $stmt->bind_param("ssss", $date, $ses, $room, $sem);
+            $stmt->execute();
+            $qrt = $stmt->get_result();
+			while ($rb = $qrt->fetch_assoc()) {
 			?>
             <tr>
-            
-             
-              <td><div align="center"><?php echo $rb['seat'];?></div></td>
-			      <td><div align="center"><?php echo $rb['regno'];?></div></td>
-				        <td><div align="center"><?php echo $rb['sub'];?></div></td>
+              <td><div align="center"><?php echo htmlspecialchars($rb['seat']); ?></div></td>
+			  <td><div align="center"><?php echo htmlspecialchars($rb['regno']); ?></div></td>
+			  <td><div align="center"><?php echo htmlspecialchars($rb['sub']); ?></div></td>
               </tr>
 			<?php
-			}
-			
-			
+            }
+            $stmt->close();
 			?>
-			 
 			<?php } ?>
           </table>
                
            </br></br> </br>          
  
 <br />
-          &copy 2024examseat| All Rights Reserved |  <a href="http://binarytheme.com" style="color: #fff" target="_blank">Design by : binarytheme.com</a>
+          &copy; 2024 examseat| All Rights Reserved |  <a href="http://binarytheme.com" style="color: #fff" target="_blank">Design by : binarytheme.com</a>
     </div>
      <!-- FOOTER SECTION END-->
    
